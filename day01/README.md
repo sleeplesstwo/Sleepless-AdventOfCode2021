@@ -85,3 +85,9 @@ H: 792 (increased)
 In this example, there are 5 sums that are larger than the previous sum.
 
 Consider sums of a three-measurement sliding window. How many sums are larger than the previous sum?
+
+## Thoughts after completion
+
+Submitted an incorrect solution in part 1.  After forcing variables to int the returned result increased by 1.  Possibly something about how Get-Content parsed the file.
+
+Part 2 could also use `$value = $measurements[$i..($i+2)] | Measure-Object -Sum).Sum` on lines 14 and 16 rather than taking values individually.
