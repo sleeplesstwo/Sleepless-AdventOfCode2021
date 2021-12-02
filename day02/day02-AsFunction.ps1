@@ -1,11 +1,12 @@
 function Get-Day2Solution {
     [CmdletBinding()]
     param (
+        #Input file to use for calculating solution.
         [Parameter(Mandatory=$true)]
         [string]
         $InputFile,
 
-        # Parameter help description
+        # Calculate solution for which part?
         [Parameter()]
         [ValidateRange(1,2)]
         [int]
