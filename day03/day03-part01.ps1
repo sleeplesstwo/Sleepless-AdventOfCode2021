@@ -5,6 +5,7 @@ $inputdata = Get-Content -Path (Join-Path $BasePath -ChildPath "input.txt")
 
 $BitArray = @()
 
+# Create an object of the bits.
 foreach ($line in $inputdata) {
     $BitValue = [PSCustomObject]@{
         'First' = $line[0]
@@ -24,6 +25,7 @@ foreach ($line in $inputdata) {
     $BitArray += $BitValue
 }
 
+# It works but oh god why.  I should have just changed the property names to decimal numbers
 $FirstBitResult = ($BitArray | Group-Object -Property "First" | Sort-Object -Property "Count" -Descending)[0].Name
 $SecondBitResult = ($BitArray | Group-Object -Property "Second" | Sort-Object -Property "Count" -Descending)[0].Name
 $ThirdBitResult = ($BitArray | Group-Object -Property "Third" | Sort-Object -Property "Count" -Descending)[0].Name
@@ -37,10 +39,10 @@ $TenthBitResult = ($BitArray | Group-Object -Property "Tenth" | Sort-Object -Pro
 $EleventhBitResult = ($BitArray | Group-Object -Property "Eleventh" | Sort-Object -Property "Count" -Descending)[0].Name
 $TwelvethBitResult = ($BitArray | Group-Object -Property "Twelveth" | Sort-Object -Property "Count" -Descending)[0].Name
 
+# Join all the results into a single string.
 $BinaryResultGamma = $FirstBitResult,$SecondBitResult,$ThirdBitResult,$FourthBitResult,$FifthBitResult,$SixthBitResult,$SeventhBitResult,$EighthBitResult,$NinethBitResult,$TenthBitResult,$EleventhBitResult,$TwelvethBitResult -join ""
 
-#$BinaryResultGamma = [string]$FirstBitResult + [string]$SecondBitResult + [string]$ThirdBitResult + [string]$FourthBitResult + [string]$FifthBitResult
-
+# Treat the string as a binary value and convert that value to an int.
 $GammaResult = [Convert]::ToInt32($BinaryResultGamma,2)
 
 $FirstBitResult = ($BitArray | Group-Object -Property "First" | Sort-Object -Property "Count" -Descending)[1].Name
