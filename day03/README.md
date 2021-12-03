@@ -67,3 +67,6 @@ Use the binary numbers in your diagnostic report to calculate the oxygen generat
 
 ## Thoughts after completion
 
+For part 1.  WTF.....just wtf.  Ugly as hell but it works, was just going for speed result.
+
+In part 2 because of the new goal had to actually put more thought into being able to loop through the objects.  Also ended up getting stuck as I forgot to check if there was only 1 result left, which worked for the oxygen checking since the highest value would always be index 0 and but with CO2 the lowest value would always be in index 1 which stops existing as soon as there is only 1 result left.  Added the if block at the start of the loop with the break which fixed it.
