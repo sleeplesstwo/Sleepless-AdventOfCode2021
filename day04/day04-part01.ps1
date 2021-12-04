@@ -1,3 +1,6 @@
+#Lets make classes for the board parts
+
+#Square tracks if it's been selected, what row/column and it's value
 class Square {
     [int]$ColNum
     [int]$RowNum
@@ -16,7 +19,7 @@ class Square {
     }
 }
 
-
+# Row contains an array of squares and it's row number
 class Row {
     [int]$RowNum
     [Square[]]$ColData
@@ -34,6 +37,7 @@ class Row {
     }
 }
 
+#Board consists of multiple rows
 class Board {
     [int]$BoardID
     [Row[]]$RowData
@@ -58,16 +62,25 @@ function Import-Board {
         [Parameter()]
         [string[]]$Inputdata
     )
+    # Initialize a new board object give it an ID of the offset.
     $Board = [Board]::new($Offset)
     for($i=0; $i -lt 5; $i++) {
+        # Input each line starting from the offset
+        # Trim whitespace from ends of string then split at whitespace
         $line = ($Inputdata[$i+$Offset]).trim() -split '\s+'
+
+        # Initalize a row object with RowNum of i
         $RowData = [Row]::new($i)
         for($j=0; $j -lt 5; $j++) {
+            # Add the squares into the row.
             $RowData.AddCol($line[$j], $j)
         }
+
+        # Add the row to the board
         $Board.AddRow($RowData)
     }
 
+    # Return the completed board object
     return $Board
 }
 
@@ -81,9 +94,13 @@ function Update-Board {
         [Parameter()]
         [Board[]]$Boards
     )
+
+    # Take an array of boards and for each
     foreach ($Board in $Boards) {
+        # Find every square that matches the input number
         $itemToUpdate = $Board.RowData.ColData | Where-Object {$_.Value -eq $Number}
 
+        # If there is any matches, set the selected value to true.
         if ($null -ne $itemToUpdate) {
             $itemToUpdate.selected = $true
         }
@@ -100,17 +117,20 @@ function Test-Boards {
     foreach ($Board in $Boards) {
         # Test Rows
         for ($i = 0; $i -lt 5; $i++) {
+            # Step through each row and check to see if none are false and if not return the boardID
             if (($Board.RowData.ColData | Where-Object { $_.RowNum -eq $i }).selected -notcontains $false) {
                 return $Board.BoardID
             }
         }
         # Test Columns
         for ($i = 0; $i -lt 5; $i++) {
+            # Step through each column and check to see if none are false and if not return the boardID
             if (($Board.RowData.ColData | Where-Object { $_.ColNum -eq $i }).Selected -notcontains $false) {
                 return $Board.BoardID
             }
         }
     }
+    # No winning rows/columns so return null value.
     return $null
 }
 
@@ -122,25 +142,37 @@ $BasePath = (Split-Path -Path $MyInvocation.MyCommand.Path -Parent)
 $BoardData = Get-Content -Path (Join-Path $BasePath -ChildPath "boardinput.txt")
 $SelectionData = (Get-Content -Path (Join-Path $BasePath -ChildPath "selectioninput.txt")) -split ","
 
+# How many boards are there, 6 lines per including the seperating blank line
 $TotalLines = $BoardData.Count
 $TotalBoards = $TotalLines / 6
+
+# Initialize an empty array to hold all the boards
 $Boards = @()
+
+# Import each board into the array
 for($i=0;$i -lt $TotalBoards; $i++) {
     $Boards += Import-Board -Offset ($i * 6) -Inputdata $BoardData
 }
 
+# Start going through each number in the selection data
 foreach ($call in $SelectionData) {
+    # Update all the boards with the called number
     Update-Board -Number $call -Boards $Boards
+
+    # Test the boards to see if any have won
     $IsWinner = Test-Boards $Boards
+
+    # Non null means we've found a winner
     if ($null -ne $IsWinner) {
         break
     }
 }
 
+# Get the winning board and sum all the values that haven't been selected
 $WinningBoard = $Boards | Where-Object {$_.BoardID -eq $IsWinner}
-
 $BoardScore = ($WinningBoard.RowData.ColData | Where-Object {$_.selected -eq $false} | Measure-Object -Property "value" -Sum).Sum
 
+# Multiply result by the called number for result
 $result = $BoardScore * $call
-
 $result
+$result | Set-Clipboard

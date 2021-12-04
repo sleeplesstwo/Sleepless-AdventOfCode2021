@@ -65,3 +65,9 @@ You aren't sure how many bingo boards a giant squid could play at once, so rathe
 In the above example, the second board is the last to win, which happens after 13 is eventually called and its middle column is completely marked. If you were to keep playing until this point, the second board would have a sum of unmarked numbers equal to 148 for a final score of 148 * 13 = 1924.
 
 Figure out which board will win last. Once it wins, what would its final score be?
+
+## Thoughts after completion
+
+Considered using class methods instead of functions but functions are easier to troubleshoot.
+
+Part 2 came quick after part 1 since only a bit had to be changed.  Realized I can't assume that only 1 board wins per round.
