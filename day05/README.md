@@ -72,3 +72,4 @@ Consider all of the lines. At how many points do at least two lines overlap?
 
 ## Thoughts after completion
 
+Spent a good 20 minutes debuging part 2 until I finally saw one of the comparions in the diagonal processing branch had $StarY instead of $StartY
