@@ -94,14 +94,15 @@ function Test-Basin {
 
 [System.Collections.ArrayList]$BasinSizes = @()
 $totalToCheck = $lowPoints.count
-$currentProgress = 0
-foreach ($point in $lowPoints) {
-    Write-Host "Checking Point $currentProgress of $totalToCheck"
+$currentProgress = 1
+foreach ($point in $lowPoints) { 
+    Write-Progress -Activity "Checking Points" -PercentComplete (($currentProgress / $totalToCheck)*100) -Status "Checking $currentProgress of $totalToCheck"
     $global:BasinLocations = @()
     Test-Basin -x $point.x -y $point.y
     $BasinSizes.Add((($global:BasinLocations | Group-Object).Count)) | Out-Null
     $currentProgress++
 }
+    Write-Progress -Activity "Checking Points" -Completed
 $BasinSizes = $BasinSizes | Sort-Object -Descending | Select-Object -First 3
 
 $results = $BasinSizes[0] * $BasinSizes[1] * $BasinSizes[2]
