@@ -5,9 +5,11 @@ $HeightData = (Get-Content -Path (Join-Path $BasePath -ChildPath "input.txt"))
 $LineCount = $HeightData.Count
 $ColCount = ($HeightData[0].toCharArray()).Count
 
-# Build a 2 dimensional array to hold all the data.
+# Build a 2 dimensional array as a global variable to hold all the data
+# This saves on RAM and execution since we don't have to copy it through every pass of the checking function later
 $global:HeightMap = New-Object 'object[,]' $ColCount, $LineCount
 
+#Populate the array with values
 for ($i = 0; $i -lt $LineCount; $i++) {
     $line = $HeightData[$i].toCharArray()
     for ($j = 0; $j -lt $ColCount; $j++) {
@@ -63,8 +65,11 @@ function Test-Basin {
 
     )
 
+    # Add the X,Y value to the global BasinLocations variable
     $global:BasinLocations += "$x,$y"
     $height = [int]::Parse(($global:HeightMap[$x,$y]))
+
+    # Check each adjacent square to see if it's larger so long as we aren't on an edge
     if ($x -ne 0) {
         $adjacentHeight = [int]::Parse(($global:HeightMap[($x-1),$y]))
         if ($adjacentHeight -gt $height -and $adjacentHeight -ne 9) {
@@ -93,16 +98,25 @@ function Test-Basin {
 }
 
 [System.Collections.ArrayList]$BasinSizes = @()
+
+# Setup values for progress bar
 $totalToCheck = $lowPoints.count
 $currentProgress = 1
+
 foreach ($point in $lowPoints) { 
     Write-Progress -Activity "Checking Points" -PercentComplete (($currentProgress / $totalToCheck)*100) -Status "Checking $currentProgress of $totalToCheck"
+    # Clear the global BasinLocations value on each pass
     $global:BasinLocations = @()
     Test-Basin -x $point.x -y $point.y
+
+    # Group up the values in BasinLocations to get a list of unique x,y coordinates that are part of the basin and get a count of them to add to the array of BasinSizes
     $BasinSizes.Add((($global:BasinLocations | Group-Object).Count)) | Out-Null
     $currentProgress++
 }
+    # Set the progress bar to Complete 
     Write-Progress -Activity "Checking Points" -Completed
+
+#Sort the array of BasinSizes largest to smallest and take the first 3
 $BasinSizes = $BasinSizes | Sort-Object -Descending | Select-Object -First 3
 
 $results = $BasinSizes[0] * $BasinSizes[1] * $BasinSizes[2]
