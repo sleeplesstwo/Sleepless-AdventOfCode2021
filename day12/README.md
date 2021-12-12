@@ -163,3 +163,5 @@ The slightly larger example above now has 103 paths through it, and the even lar
 Given these new rules, how many paths through this cave system are there?
 
 ## Thoughts after completion
+
+Part 2 is not fast and I'm sure there is probably a faster way to do it and I figured I'd see it through to the end, takes a bit over 2 minutes to complete the part 2 challenge.
