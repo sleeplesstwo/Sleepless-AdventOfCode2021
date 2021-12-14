@@ -48,7 +48,7 @@ function Get-PolymerResults {
     return $Template
 }
 
-$ResultGroup = (Get-PolymerResults -Rules $Rules -Template $Template -Pass 40).toCharArray() | Group-Object | Sort-Object -Property Count
+$ResultGroup = (Get-PolymerResults -Rules $Rules -Template $Template -Pass 10).toCharArray() | Group-Object | Sort-Object -Property Count
 #Get-PolymerResults -Rules $Rules -Template $Template -Pass 10
 $result = ($ResultGroup[-1].Count) - ($ResultGroup[0].Count)
 $result
